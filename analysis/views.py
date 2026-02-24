@@ -119,3 +119,17 @@ def analysis_history(request):
 
     serializer = AnalysisSerializer(analyses, many=True)
     return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def job_ranking(request, job_id):
+    user = request.user
+
+    #ensure only recruiter can access
+    if user.role != "recruiter":
+        return Response({"error": "Access denied"}, status=403)
+
+    analyses = Analysis.objects.filter(job_id=job_id).order_by("-score")
+
+    serializer = AnalysisSerializer(analyses, many=True)
+    return Response(serializer.data)

@@ -26,6 +26,7 @@ from jobs.views import create_job
 from analysis.views import run_analysis
 from analysis.views import analysis_history
 from django.urls import include
+from analysis.views import job_ranking
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -49,6 +50,7 @@ urlpatterns = [
     path("api/run-analysis/", run_analysis),
     path("api/analysis-history/", analysis_history),
     path("api/analysis/", include("analysis.urls")),
+    path("api/job/<int:job_id>/ranking/",job_ranking),
     
 
 ]
