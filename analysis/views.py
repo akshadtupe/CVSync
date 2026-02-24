@@ -10,6 +10,10 @@ from jobs.models import JobDescription
 from .models import Analysis
 from .serializers import AnalysisSerializer
 import requests
+from PyPDF2 import PdfReader
+
+
+
 
 
 @api_view(["POST"])
@@ -26,33 +30,75 @@ def run_analysis(request):
     except JobDescription.DoesNotExist:
         return Response({"error": "Job not found"}, status=404)
 
-    # 🔹 Extract resume text (basic for now)
+    #Extract resume text 
     resume.file.open()
-    resume_text = resume.file.read().decode("utf-8", errors="ignore")
+    reader=PdfReader(resume.file)
+    resume_text=""
+
+    for page in reader.pages:
+        text = page.extract_text()
+        if text:
+            resume_text+=text
+
     resume.file.close()
 
-    # 🔹 Call FastAPI
-    try:
-        response = requests.post(
-            "http://127.0.0.1:8001/analyze",
-            json={
-                "resume_text": resume_text,
-                "job_description": job.description,
-            },
-            timeout=10,
-        )
-        ai_data = response.json()
-    except Exception as e:
-        return Response({"error": "FastAPI service unavailable"}, status=500)
+    #Call FastAPI
+    #Embedding Caching
 
-    # 🔹 Save analysis
+    # Resume embedding
+    if not resume.embedding:
+        embed_response = requests.post(
+            "http://127.0.0.1:8001/embed",
+            json={"text": resume_text},
+        )
+        resume.embedding = embed_response.json()["embedding"]
+        resume.save()
+
+    # Job embedding
+    if not job.embedding:
+        embed_response = requests.post(
+            "http://127.0.0.1:8001/embed",
+            json={"text": job.description},
+        )
+        job.embedding = embed_response.json()["embedding"]
+        job.save()
+
+    #SIMILARITY
+    similarity_response = requests.post(
+        "http://127.0.0.1:8001/similarity",
+        json={
+            "resume_embedding": resume.embedding,
+            "job_embedding": job.embedding,
+            "resume_text": resume_text,
+            "job_text": job.description,
+        },
+    )
+
+    score = similarity_response.json()["score"]
+    matched_skills = similarity_response.json()["matched_skills"]
+    missing_skills = similarity_response.json()["missing_skills"]
+
+
+    #Suggestions (LLM)
+
+    suggest_response = requests.post(
+        "http://127.0.0.1:8001/suggest",
+        json={
+            "resume_text": resume_text,
+            "job_description": job.description,
+        },
+    )
+
+    suggestions = suggest_response.json()["suggestions"]
+
+    #Save analysis
     analysis = Analysis.objects.create(
         resume=resume,
         job=job,
-        score=ai_data["score"],
-        matched_skills=ai_data["matched_skills"],
-        missing_skills=ai_data["missing_skills"],
-        suggestions=ai_data["suggestions"],
+        score=score,
+        matched_skills=matched_skills,
+        missing_skills=missing_skills,
+        suggestions=suggestions,
     )
 
     serializer = AnalysisSerializer(analysis)

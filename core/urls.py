@@ -25,6 +25,7 @@ from resumes.views import upload_resume
 from jobs.views import create_job
 from analysis.views import run_analysis
 from analysis.views import analysis_history
+from django.urls import include
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -47,6 +48,7 @@ urlpatterns = [
     path("api/create-job/", create_job),
     path("api/run-analysis/", run_analysis),
     path("api/analysis-history/", analysis_history),
+    path("api/analysis/", include("analysis.urls")),
     
 
 ]

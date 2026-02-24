@@ -1,5 +1,7 @@
 from django.db import models
 
+embedding = models.JSONField(null=True, blank=True)
+
 # Create your models here.
 
 from django.conf import settings
@@ -17,6 +19,8 @@ class JobDescription(models.Model):
     description = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    embedding = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return self.title
