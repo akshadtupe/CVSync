@@ -23,7 +23,7 @@ from accounts.views import protected_view, register_user
 from accounts.views import student_dashboard, recruiter_dashboard
 from accounts.serializers import CustomTokenObtainPairView
 from resumes.views import upload_resume
-from jobs.views import create_job
+from jobs.views import create_job, list_jobs   
 from analysis.views import run_analysis
 from analysis.views import analysis_history
 from django.urls import include
@@ -55,6 +55,7 @@ urlpatterns = [
     path("api/analysis/", include("analysis.urls")),
     path("api/job/<int:job_id>/ranking/",job_ranking),
     path("api/register/", register_user),
+    path("api/jobs/", list_jobs),
     
 
 ]

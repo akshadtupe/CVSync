@@ -55,6 +55,9 @@ function Login() {
       <br /><br />
 
       <button onClick={handleLogin}>Login</button>
+      <p>
+        New user? <a href="/register">Register here</a>
+      </p>
     </div>
   );
 }
