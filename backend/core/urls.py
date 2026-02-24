@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import protected_view
+from accounts.views import protected_view, register_user
 from accounts.views import student_dashboard, recruiter_dashboard
 from accounts.serializers import CustomTokenObtainPairView
 from resumes.views import upload_resume
@@ -28,6 +28,8 @@ from analysis.views import run_analysis
 from analysis.views import analysis_history
 from django.urls import include
 from analysis.views import job_ranking
+from accounts.views import register_user
+
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -52,6 +54,7 @@ urlpatterns = [
     path("api/analysis-history/", analysis_history),
     path("api/analysis/", include("analysis.urls")),
     path("api/job/<int:job_id>/ranking/",job_ranking),
+    path("api/register/", register_user),
     
 
 ]
