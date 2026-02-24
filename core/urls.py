@@ -21,6 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from accounts.views import protected_view
 from accounts.views import student_dashboard, recruiter_dashboard
+from accounts.serializers import CustomTokenObtainPairView
 from resumes.views import upload_resume
 from jobs.views import create_job
 from analysis.views import run_analysis
@@ -40,7 +41,7 @@ def home(request):
 urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/protected/', protected_view),
     path('api/student/', student_dashboard),
