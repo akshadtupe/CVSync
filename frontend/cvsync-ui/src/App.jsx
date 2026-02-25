@@ -4,6 +4,8 @@ import StudentDashboard from "./pages/StudentDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
+import JobFeed from "./pages/JobFeed";  
+
 
 function App() {
   return (
@@ -24,6 +26,15 @@ function App() {
   element={
     <ProtectedRoute role="recruiter">
       <RecruiterDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/job-feed"
+  element={
+    <ProtectedRoute role="student">
+      <JobFeed />
     </ProtectedRoute>
   }
 />

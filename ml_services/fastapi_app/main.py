@@ -125,9 +125,11 @@ def generate_suggestions(data: SuggestInput):
     Job Description:
     {data.job_description[:2000]}
 
+    suggest specific improvements to help this resume better match the job description.
     Return ONLY 3 short bullet points.
     Max 15 words each.
     No explanation.
+    
     """
 
     llm_response = client.chat.completions.create(

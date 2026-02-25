@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from accounts.permissions import IsStudent
+from accounts.permissions import IsRecruiter, IsStudent
 from resumes.models import Resume
 from jobs.models import JobDescription
 from .models import Analysis
@@ -19,16 +19,23 @@ from PyPDF2 import PdfReader
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsStudent])
 def run_analysis(request):
-    resume_id = request.data.get("resume_id")
     job_id = request.data.get("job_id")
 
     try:
-        resume = Resume.objects.get(id=resume_id, user=request.user)
-        job = JobDescription.objects.get(id=job_id)
-    except Resume.DoesNotExist:
+        resume = request.user.resume
+    except:
         return Response({"error": "Resume not found"}, status=404)
+    
+    try:
+        job = JobDescription.objects.get(id=job_id)
     except JobDescription.DoesNotExist:
         return Response({"error": "Job not found"}, status=404)
+    
+    if Analysis.objects.filter(resume=resume, job=job).exists():
+        return Response(
+            {"error": "Already Appplied !!"},
+            status=400
+        )
 
     #Extract resume text 
     resume.file.open()
@@ -92,13 +99,16 @@ def run_analysis(request):
     suggestions = suggest_response.json()["suggestions"]
 
     #Save analysis
-    analysis = Analysis.objects.create(
-        resume=resume,
-        job=job,
-        score=score,
-        matched_skills=matched_skills,
-        missing_skills=missing_skills,
-        suggestions=suggestions,
+    analysis, created = Analysis.objects.update_or_create(
+    resume=resume,
+    job=job,
+    defaults={
+        "score": score,
+        "matched_skills": matched_skills,
+        "missing_skills": missing_skills,
+        "suggestions": suggestions,
+    },
+
     )
 
     serializer = AnalysisSerializer(analysis)
@@ -121,15 +131,19 @@ def analysis_history(request):
     return Response(serializer.data)
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsRecruiter])
 def job_ranking(request, job_id):
-    user = request.user
+    try:
+        job = JobDescription.objects.get(id=job_id, recruiter=request.user)
+    except JobDescription.DoesNotExist:
+        return Response({"error": "Job not found"}, status=404)
 
-    #ensure only recruiter can access
-    if user.role != "recruiter":
-        return Response({"error": "Access denied"}, status=403)
-
-    analyses = Analysis.objects.filter(job_id=job_id).order_by("-score")
+    analyses = (
+        Analysis.objects
+        .filter(job=job)
+        .select_related("resume__user")
+        .order_by("-score")
+    )
 
     serializer = AnalysisSerializer(analyses, many=True)
     return Response(serializer.data)

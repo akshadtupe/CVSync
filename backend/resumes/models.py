@@ -6,10 +6,10 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Resume(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="resumes"
+        related_name="resume",
     )
 
     file = models.FileField(upload_to="resumes/")

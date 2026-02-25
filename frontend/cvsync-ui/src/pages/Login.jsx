@@ -26,7 +26,7 @@ function Login() {
       localStorage.setItem("role", role);
 
       if (role === "student") {
-        navigate("/student");
+        navigate("/job-feed");
       } else {
         navigate("/recruiter");
       }

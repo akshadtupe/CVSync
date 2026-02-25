@@ -3,6 +3,7 @@ import API from "../api/axios";
 
 function StudentDashboard() {
   const [file, setFile] = useState(null);
+  const [resumeId, setResumeId] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState("");
   const [analysisResult, setAnalysisResult] = useState(null);
@@ -21,23 +22,57 @@ function StudentDashboard() {
   };
 
   const uploadResume = async () => {
+    if (!file) {
+      alert("Please select a file first");
+      return;
+    }
+
+
     const formData = new FormData();
     formData.append("file", file);
 
-    await API.post("upload-resume/", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      const response = await API.post("upload-resume/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    alert("Resume uploaded");
+      setResumeId(response.data.id);
+      alert("Resume uploaded successfully");
+      console.log("Resume ID:", response.data.id);
+
+    } catch (error) {
+      console.error(error);
+      alert("Upload failed");
+    }
   };
 
   const runAnalysis = async () => {
-    const response = await API.post("run-analysis/", {
-      resume_id: 1,   // temporarily hardcoded
-      job_id: selectedJob,
-    });
+    if (!resumeId) {
+      alert("Upload resume first");
+      return;
+    }
 
-    setAnalysisResult(response.data);
+    if (!selectedJob) {
+      alert("Select a job first");
+      return;
+    }
+
+    try {
+      const response = await API.post("run-analysis/", {
+        job_id: selectedJob,
+      });
+
+      setAnalysisResult(response.data);
+
+    } catch (error) {
+      console.error(error);
+
+      if (error.response) {
+        alert(error.response.data.error || "Analysis error");
+      } else {
+        alert("Server not reachable");
+      }
+    }
   };
 
   return (
@@ -50,7 +85,7 @@ function StudentDashboard() {
 
       <h3>Select Job</h3>
       <select onChange={(e) => setSelectedJob(e.target.value)}>
-        <option>Select Job</option>
+        <option value="">Select Job</option>
         {jobs.map((job) => (
           <option key={job.id} value={job.id}>
             {job.title}
@@ -67,11 +102,10 @@ function StudentDashboard() {
           <p>Score: {analysisResult.score}%</p>
           <p>Matched Skills: {analysisResult.matched_skills.join(", ")}</p>
           <p>Missing Skills: {analysisResult.missing_skills.join(", ")}</p>
-          <p>Suggestions: {analysisResult.suggestions}</p>
+          {/* <p>Suggestions: {analysisResult.suggestions}</p> */}
         </div>
       )}
     </div>
   );
 }
-
 export default StudentDashboard;
