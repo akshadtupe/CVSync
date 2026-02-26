@@ -51,3 +51,47 @@ def register_user(request):
         return Response({"message": "User registered successfully"}, status=201)
 
     return Response(serializer.errors, status=400)
+
+from resumes.models import Resume
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import parser_classes
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def profile_view(request):
+    user = request.user
+
+    data = {
+        "username": user.username,
+        "role": user.role,
+    }
+
+    if user.role == "student":
+        try:
+            resume = user.resume
+            data["resume"] = resume.file.url
+        except Resume.DoesNotExist:
+            data["resume"] = None
+
+    return Response(data)
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def update_resume(request):
+    user = request.user
+
+    if user.role != "student":
+        return Response({"error": "Only students can upload resume"}, status=403)
+
+    file = request.FILES.get("file")
+
+    if not file:
+        return Response({"error": "No file provided"}, status=400)
+
+    resume, created = Resume.objects.get_or_create(user=user)
+    resume.file = file
+    resume.save()
+
+    return Response({"message": "Resume updated successfully"})

@@ -63,6 +63,23 @@ function RecruiterDashboard() {
     console.error("Ranking error:", err);
     setError("Failed to load ranking");
   }
+
+  
+};
+
+const deleteJob = async (jobId) => {
+  console.log("Deleting job:", jobId);
+
+  try {
+    const response = await API.delete(`job/${jobId}/delete/`);
+    console.log("Delete response:", response);
+
+    setJobs(jobs.filter((job) => job.id !== jobId));
+
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError("Failed to delete job");
+  }
 };
 
   return (
@@ -107,9 +124,23 @@ function RecruiterDashboard() {
           }}
           onClick={() => fetchRanking(job.id)}
         >
+          
           <h4>{job.title}</h4>
           <p>{job.description}</p>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // prevents triggering ranking
+              deleteJob(job.id);
+            }}
+            style={{ marginTop: "10px", background: "red", color: "white" }}
+          >
+            Delete Job
+          </button>
+
         </div>
+
+        
       ))}
 
       {selectedJob && (

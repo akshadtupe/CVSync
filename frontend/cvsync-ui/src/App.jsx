@@ -5,11 +5,15 @@ import RecruiterDashboard from "./pages/RecruiterDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
 import JobFeed from "./pages/JobFeed";  
+import MyApplications from "./pages/MyApplication";
+import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
 
 
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route
@@ -39,9 +43,16 @@ function App() {
   }
 />
 
-<Route path="/register" element={<Register />} />
-      </Routes>
+<Route path="/register" element={<Register />} /> 
+
+<Route path="/my-applications" element={<MyApplications/>} />
+
+<Route path="/profile" element={<Profile/>} />
+
+
+</Routes>
     </BrowserRouter>
+
   );
 }
 

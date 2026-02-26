@@ -50,3 +50,14 @@ def recruiter_job(request):
     jobs = JobDescription.objects.filter(recruiter=request.user)
     serializer = JobDescriptionSerializer(jobs, many=True)
     return Response(serializer.data)
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsRecruiter])
+def delete_job(request, job_id):
+    try:
+        job = JobDescription.objects.get(id=job_id, recruiter=request.user)
+    except JobDescription.DoesNotExist:
+        return Response({"error": "Job not found"}, status=404)
+
+    job.delete()
+    return Response({"message": "Job deleted successfully"}, status=204)

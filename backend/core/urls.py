@@ -23,7 +23,7 @@ from accounts.views import protected_view
 from accounts.views import student_dashboard, recruiter_dashboard
 from accounts.serializers import CustomTokenObtainPairView
 from resumes.views import upload_resume
-from jobs.views import create_job, list_jobs, recruiter_job   
+from jobs.views import create_job, delete_job, list_jobs, recruiter_job   
 from analysis.views import run_analysis
 from analysis.views import analysis_history
 from django.urls import include
@@ -31,7 +31,9 @@ from analysis.views import job_ranking
 from accounts.views import register_user
 from jobs.views import job_feed
 from jobs.views import recruiter_job
-
+from jobs.views import delete_job   
+from analysis.views import my_applications
+from accounts.views import profile_view, update_resume
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -60,8 +62,11 @@ urlpatterns = [
     # path("api/jobs/", list_jobs), #public feed
     path("api/jobs/", job_feed), #apply and analyze(students)
     path("api/recruiter/jobs/", recruiter_job), #recruiter specific jobs
+    path("api/job/<int:job_id>/delete/", delete_job),
+    path("api/my_applications/", my_applications), #student specific analysis history
+    path("api/profile/", profile_view),
+    path("api/update-resume/", update_resume),
     
-
 ]
 
 if settings.DEBUG:

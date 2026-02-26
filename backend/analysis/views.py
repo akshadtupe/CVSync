@@ -147,3 +147,22 @@ def job_ranking(request, job_id):
 
     serializer = AnalysisSerializer(analyses, many=True)
     return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_applications(request):
+    analyses = Analysis.objects.filter(
+        resume__user=request.user
+    ).order_by("-created_at")
+
+    data = [
+        {
+            "job_title": a.job.title,
+            "score": a.score,
+            "suggestions": a.suggestions,
+            "created_at": a.created_at,
+        }
+        for a in analyses
+    ]
+
+    return Response(data)
