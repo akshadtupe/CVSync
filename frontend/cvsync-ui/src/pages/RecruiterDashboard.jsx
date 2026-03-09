@@ -6,39 +6,38 @@ function RecruiterDashboard() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [ranking, setRanking] = useState([]);
   const [error, setError] = useState("");
-  const [title, setTitle] = useState(""); 
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
 
   useEffect(() => {
     fetchMyJobs();
   }, []);
 
   const createJob = async () => {
-  if (!title || !description) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  try {
-    const response = await API.post("create-job/", {
-      title: title,
-      description: description,
-    });
-
-    setJobs([...jobs, response.data]);
-    setTitle("");
-    setDescription("");
-    setError("");
-
-  } catch (err) {
-    if (err.response) {
-      setError(err.response.data.error);
-    } else {
-      setError("Failed to create job");
+    if (!title || !description) {
+      alert("Please fill all fields");
+      return;
     }
-  }
-};
+
+    try {
+      const response = await API.post("create-job/", {
+        title: title,
+        description: description,
+      });
+
+      setJobs([...jobs, response.data]);
+      setTitle("");
+      setDescription("");
+      setError("");
+
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.error);
+      } else {
+        setError("Failed to create job");
+      }
+    }
+  };
 
   const fetchMyJobs = async () => {
     try {
@@ -50,120 +49,149 @@ function RecruiterDashboard() {
   };
 
   const fetchRanking = async (jobId) => {
-  console.log("Fetching ranking for job:", jobId);
+    try {
+      const response = await API.get(`job/${jobId}/ranking/`);
+      setSelectedJob(jobId);
+      setRanking(response.data);
+    } catch (err) {
+      setError("Failed to load ranking");
+    }
+  };
 
-  try {
-    const response = await API.get(`job/${jobId}/ranking/`);
-    console.log("Ranking response:", response.data);
-
-    setSelectedJob(jobId);
-    setRanking(response.data);
-
-  } catch (err) {
-    console.error("Ranking error:", err);
-    setError("Failed to load ranking");
-  }
-
-  
-};
-
-const deleteJob = async (jobId) => {
-  console.log("Deleting job:", jobId);
-
-  try {
-    const response = await API.delete(`job/${jobId}/delete/`);
-    console.log("Delete response:", response);
-
-    setJobs(jobs.filter((job) => job.id !== jobId));
-
-  } catch (err) {
-    console.error("Delete error:", err);
-    setError("Failed to delete job");
-  }
-};
+  const deleteJob = async (jobId) => {
+    try {
+      await API.delete(`job/${jobId}/delete/`);
+      setJobs(jobs.filter((job) => job.id !== jobId));
+    } catch (err) {
+      setError("Failed to delete job");
+    }
+  };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h2>Recruiter Dashboard</h2>
+    <div className="max-w-5xl mx-auto p-8">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <h3>Create Job</h3>
-      <input
-      type="text"
-      placeholder="Job Title"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-    />
-    <br /><br />
+      <h2 className="text-3xl font-bold mb-8 text-gray-800">
+        Recruiter Dashboard
+      </h2>
 
-    <textarea
-      placeholder="Job Description"
-      value={description}
-      onChange={(e) => setDescription(e.target.value)}
-      rows={4}
-      cols={40}
-    />
-    <br /><br />
+      {error && (
+        <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
+          {error}
+        </div>
+      )}
 
-      <button onClick={createJob}>Create Job</button>
+      {/* Create Job */}
 
-      <hr />
+      <div className="bg-white shadow-md rounded-xl p-6 mb-10 border">
 
-      <h3>Your Jobs</h3>
+        <h3 className="text-xl font-semibold mb-4">
+          Create Job
+        </h3>
 
-      {jobs.length === 0 && <p>No jobs created yet</p>}
+        <div className="space-y-4">
 
-      {jobs.map((job) => (
-        <div
-          key={job.id}
-          className="bg-white shadow-md rounded-xl p-6 mb-6 hover:shadow-lg transition cursor-pointer"
-          onClick={() => fetchRanking(job.id)}
-        >
-          
-          <h4>{job.title}</h4>
-          <p>{job.description}</p>
+          <input
+            type="text"
+            placeholder="Job Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+          <textarea
+            placeholder="Job Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
 
           <button
-            onClick={(e) => {
-              e.stopPropagation(); // prevents triggering ranking
-              deleteJob(job.id);
-            }}
-            style={{ marginTop: "10px", background: "red", color: "white" }}
+            onClick={createJob}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            Delete Job
+            Create Job
           </button>
 
         </div>
 
-        
-      ))}
+      </div>
+
+      {/* Jobs */}
+
+      <h3 className="text-xl font-semibold mb-4">
+        Your Jobs
+      </h3>
+
+      {jobs.length === 0 && (
+        <p className="text-gray-500">No jobs created yet</p>
+      )}
+
+      <div className="space-y-6">
+
+        {jobs.map((job) => (
+          <div
+            key={job.id}
+            className="bg-white shadow-md rounded-xl p-6 border hover:shadow-lg transition cursor-pointer"
+            onClick={() => fetchRanking(job.id)}
+          >
+
+            <h4 className="text-lg font-semibold">
+              {job.title}
+            </h4>
+
+            <p className="text-gray-600 mt-1">
+              {job.description}
+            </p>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteJob(job.id);
+              }}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Delete Job
+            </button>
+
+          </div>
+        ))}
+
+      </div>
+
+      {/* Ranking Section (UNCHANGED LOGIC) */}
 
       {selectedJob && (
-        <>
-          <h3>Ranking</h3>
+        <div className="mt-10">
 
-          {ranking.length === 0 && <p>No applicants yet</p>}
+          <h3 className="text-xl font-semibold mb-4">
+            Ranking
+          </h3>
 
-          {ranking.map((app, index) => (
-            <div
-              key={app.id}
-              style={{
-                border: "1px solid #aaa",
-                padding: "10px",
-                marginBottom: "10px",
-              }}
-            >
-              <p><strong>Rank:</strong> #{index + 1}</p>
-              <p><strong>Student:</strong> {app.student_name}</p>
-              <p><strong>Score:</strong> {app.score}%</p>
-              {/* <p><strong>Suggestions:</strong></p>
-              <pre style={{ whiteSpace: "pre-wrap" }}>
-                {app.suggestions}
-              </pre> */}
-            </div>
-          ))}
-        </>
+          {ranking.length === 0 && (
+            <p className="text-gray-500">No applicants yet</p>
+          )}
+
+          <div className="space-y-4">
+
+            {ranking.map((app, index) => (
+              <div
+                key={app.id}
+                className="bg-white border rounded-lg p-4 shadow-sm"
+              >
+
+                <p><strong>Rank:</strong> #{index + 1}</p>
+                <p><strong>Student:</strong> {app.student_name}</p>
+                <p><strong>Score:</strong> {app.score}%</p>
+
+              </div>
+            ))}
+
+          </div>
+
+        </div>
       )}
+
     </div>
   );
 }
