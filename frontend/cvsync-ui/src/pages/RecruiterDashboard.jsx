@@ -116,12 +116,7 @@ const deleteJob = async (jobId) => {
       {jobs.map((job) => (
         <div
           key={job.id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            marginBottom: "15px",
-            cursor: "pointer",
-          }}
+          className="bg-white shadow-md rounded-xl p-6 mb-6 hover:shadow-lg transition cursor-pointer"
           onClick={() => fetchRanking(job.id)}
         >
           

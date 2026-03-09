@@ -19,8 +19,11 @@ from PyPDF2 import PdfReader
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsStudent])
 def run_analysis(request):
+
+    
     job_id = request.data.get("job_id")
 
+    
     try:
         resume = request.user.resume
     except:
@@ -112,6 +115,7 @@ def run_analysis(request):
     )
 
     serializer = AnalysisSerializer(analysis)
+    
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
