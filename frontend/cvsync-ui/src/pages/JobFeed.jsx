@@ -45,6 +45,7 @@ function JobFeed() {
       setAppliedJobs((prev) => [...prev, jobId]);
 
       setErrorMessage("");
+
     } catch (error) {
       setAnalysisResult(null);
 
@@ -59,42 +60,42 @@ function JobFeed() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-7xl mx-auto">
 
       <h1 className="text-3xl font-bold mb-8 text-gray-800">
         Job Opportunities
       </h1>
 
-      {/* Job List */}
+      <div className="grid grid-cols-3 gap-8">
 
-      <div className="space-y-6">
+        {/* LEFT SIDE — JOB LIST */}
 
-        {jobs.map((job) => (
+        <div className="col-span-2 space-y-6">
 
-          <div
-            key={job.id}
-            className="bg-white shadow-md rounded-xl p-6 border hover:shadow-lg transition"
-          >
+          {jobs.map((job) => (
 
-            <div className="flex justify-between items-center mb-2">
+            <div
+              key={job.id}
+              className="bg-white shadow-md rounded-xl p-6 border hover:shadow-lg transition"
+            >
 
-              <h2 className="text-xl font-semibold text-gray-800">
-                {job.title}
-              </h2>
+              <div className="flex justify-between items-center mb-2">
 
-              {appliedJobs.includes(job.id) && (
-                <span className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
-                  Applied
-                </span>
-              )}
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {job.title}
+                </h2>
 
-            </div>
+                {appliedJobs.includes(job.id) && (
+                  <span className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full">
+                    Applied
+                  </span>
+                )}
 
-            <p className="text-gray-600 mb-4">
-              {job.description}
-            </p>
+              </div>
 
-            <div className="flex justify-end">
+              <p className="text-gray-600 mb-4">
+                {job.description}
+              </p>
 
               <button
                 disabled={appliedJobs.includes(job.id) || loadingJob === job.id}
@@ -114,58 +115,52 @@ function JobFeed() {
 
             </div>
 
-          </div>
+          ))}
 
-        ))}
+        </div>
 
-      </div>
+        {/* RIGHT SIDE — ANALYSIS PANEL */}
 
-      {/* Analysis Result */}
+        <div className="bg-white shadow-md rounded-xl p-6 border h-fit sticky top-24">
 
-      {analysisResult && (
-
-        <div className="mt-10 bg-white border rounded-xl p-6 shadow">
-
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+          <h2 className="text-xl font-semibold mb-4">
             Analysis Result
           </h2>
 
-          {/* Score */}
-
-          <div className="mb-4">
-
-            <p className="font-medium mb-2">
-              Match Score: {analysisResult.score}%
+          {!analysisResult && (
+            <p className="text-gray-500">
+              Click "Apply & Analyze" on a job to see your resume match score.
             </p>
+          )}
 
-            <div className="w-full bg-gray-200 rounded-full h-4">
+          {analysisResult && (
+            <>
+              <p className="font-medium mb-2">
+                Match Score: {analysisResult.score}%
+              </p>
 
-              <div
-                className="bg-green-500 h-4 rounded-full"
-                style={{ width: `${analysisResult.score}%` }}
-              ></div>
+              <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div
+                  className="bg-green-500 h-4 rounded-full"
+                  style={{ width: `${analysisResult.score}%` }}
+                ></div>
+              </div>
 
-            </div>
+              <div className="whitespace-pre-wrap text-gray-700">
+                {analysisResult.suggestions}
+              </div>
+            </>
+          )}
 
-          </div>
-
-          {/* Suggestions */}
-
-          <div className="whitespace-pre-wrap text-gray-700">
-            {analysisResult.suggestions}
-          </div>
+          {errorMessage && (
+            <p className="text-red-500 mt-4">
+              {errorMessage}
+            </p>
+          )}
 
         </div>
 
-      )}
-
-      {/* Error */}
-
-      {errorMessage && (
-        <div className="mt-6 bg-red-100 text-red-700 p-4 rounded-lg">
-          {errorMessage}
-        </div>
-      )}
+      </div>
 
     </div>
   );
