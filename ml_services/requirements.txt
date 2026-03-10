@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-# sentence-transformers
+sentence-transformers
 scikit-learn
 numpy
 groq
