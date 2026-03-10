@@ -37,29 +37,56 @@ function Login() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h2>CVSync Login</h2>
+  <div className="min-h-screen flex items-center justify-center bg-gray-100">
+
+    <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+
+      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+        CVSync Login
+      </h2>
+
+      {/* Username */}
 
       <input
         type="text"
         placeholder="Username"
         onChange={(e) => setUsername(e.target.value)}
+        className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <br /><br />
+
+      {/* Password */}
 
       <input
         type="password"
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
+        className="w-full border rounded-lg px-4 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <br /><br />
 
-      <button onClick={handleLogin}>Login</button>
-      <p>
-        New user? <a href="/register">Register here</a>
+      {/* Login Button */}
+
+      <button
+        onClick={handleLogin}
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+      >
+        Login
+      </button>
+
+      {/* Register */}
+
+      <p className="text-center text-sm text-gray-600 mt-4">
+        New user?{" "}
+        <a
+          href="/register"
+        >
+          Register here
+        </a>
       </p>
+
     </div>
-  );
+
+  </div>
+);
 }
 
 export default Login;

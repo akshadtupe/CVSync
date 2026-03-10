@@ -8,6 +8,9 @@ import JobFeed from "./pages/JobFeed";
 import MyApplications from "./pages/MyApplication";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
+import About from "./pages/About";
+
+
 
 
 function App() {
@@ -48,6 +51,8 @@ function App() {
 <Route path="/my-applications" element={<MyApplications/>} />
 
 <Route path="/profile" element={<Profile/>} />
+
+<Route path="/about" element={<About/>} />
 
 
 </Routes>

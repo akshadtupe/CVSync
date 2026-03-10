@@ -75,6 +75,13 @@ function Navbar() {
             Logout
           </button>
 
+          <button
+            onClick={() => navigate("/about")}
+            className="hover:text-blue-400 transition"
+          >
+            About
+          </button>
+
         </div>
 
       </div>

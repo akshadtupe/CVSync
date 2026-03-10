@@ -1,13 +1,50 @@
-import Navbar from "./Navbar";
+import CardNav from "./CardNav";
 
-function Layout({ children }) {
+
+function Layouts({ children }) {
+
+  const items = [
+    {
+      label: "Jobs",
+      bgColor: "#D5B893",
+      textColor: "#000000",
+      links: [
+        { label: "Job Feed", href: "/job-feed" },
+        { label: "Applications", href: "/my-applications" }
+      ]
+    },
+    {
+      label: "Profile",
+      bgColor: "#e5e7eb",
+      textColor: "#111",
+      links: [
+        { label: "My Profile", href: "/profile" }
+      ]
+    },
+    {
+      label: "Recruiter",
+      bgColor: "#dbeafe",
+      textColor: "#111",
+      links: [
+        { label: "Dashboard", href: "/recruiter" }
+      ]
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-100">
 
-      <Navbar />
+      <CardNav
+        logo={logo}
+        items={items}
+        baseColor="#ffffff"
+        menuColor="#000"
+        buttonBgColor="#2563eb"
+        buttonTextColor="#fff"
+      />
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      {/* page content */}
+      <main className="max-w-7xl mx-auto pt-32 px-6">
         {children}
       </main>
 

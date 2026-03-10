@@ -1,0 +1,34 @@
+/* About.css */
+
+
+
+.about-container {
+  color: #fefefe;
+  max-width: 900px;
+  margin: auto;
+  padding: 60px 20px;
+  font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.about-title {
+ color: #D5B893;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.about-description {
+  color: #000000;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.about-steps {
+  margin-top: 20px;
+}
+
+.about-step {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
