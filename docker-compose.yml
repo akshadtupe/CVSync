@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cvsync
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2409
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  ml_service:
+    build: ./ml_services
+    ports:
+      - "8001:8001"
+
+  frontend:
+    build: ./frontend/cvsync-ui
+    ports:
+      - "5173:5173"

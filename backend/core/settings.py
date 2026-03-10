@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-w(%+%k+^+=ldunk$q4+tp(2&gjc8^+b4$&&7q#bmp^0h2=r&-a"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -96,7 +96,7 @@ DATABASES = {
         "NAME": "cvsync",
         "USER": "postgres",
         "PASSWORD": "2409",
-        "HOST": "localhost",
+        "HOST": "postgres",  # Use the service name defined in docker-compose.yml
         "PORT": "5432",
     }
 }
@@ -176,3 +176,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+CORS_ALLOW_ALL_ORIGINS = True
