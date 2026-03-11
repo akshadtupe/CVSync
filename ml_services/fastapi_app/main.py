@@ -69,6 +69,7 @@ model = None
 
 def load_model():
     global model
+    from sentence_transformers import SentenceTransformer
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
