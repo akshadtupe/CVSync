@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 from typing import List
 import re
+import threading
 
 
 COMMON_SKILLS = {
@@ -31,11 +32,13 @@ COMMON_SKILLS = {
     "rest api",
 }
 
+
 def normalize_text(text):
     text = text.lower()
     text = re.sub(r"[^a-z0-9\s]", " ", text)
     text = re.sub(r"\s+", " ", text)
     return text.strip()
+
 
 def extract_skills(text):
     normalized = normalize_text(text)
@@ -52,19 +55,29 @@ def extract_skills(text):
 
     return list(found)
 
+
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-# print("Loaded Key:",os.getenv("GROQ_API_KEY")[:8])
 
 app = FastAPI()
 
-# Load model once at startup
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# ✅ DEPLOY SAFE CHANGE (lazy model loading)
+model = None
 
 
-#Schemas
+def load_model():
+    global model
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+@app.on_event("startup")
+def startup_event():
+    threading.Thread(target=load_model).start()
+
+
+# Schemas
 class TextInput(BaseModel):
     text: str
 
@@ -74,16 +87,20 @@ class SuggestInput(BaseModel):
     job_description: str
 
 
-
 class SimilarityInput(BaseModel):
     resume_embedding: List[float]
     job_embedding: List[float]
     resume_text: str
     job_text: str
 
-#Embedding endpoint
+
+# Embedding endpoint
 @app.post("/embed")
 def generate_embedding(data: TextInput):
+
+    if model is None:
+        return {"error": "model loading"}
+
     embedding = model.encode(data.text).tolist()
     return {"embedding": embedding}
 
@@ -98,7 +115,6 @@ def compute_similarity(data: SimilarityInput):
     similarity = cosine_similarity(resume_vec, job_vec)[0][0]
     score = float(round(float(similarity) * 100, 2))
 
-    #Skill extraction
     resume_skills = extract_skills(data.resume_text)
     job_skills = extract_skills(data.job_text)
 
@@ -111,8 +127,8 @@ def compute_similarity(data: SimilarityInput):
         "missing_skills": missing
     }
 
-#Suggestions endpoint (LLM)
 
+# Suggestions endpoint (LLM)
 @app.post("/suggest")
 def generate_suggestions(data: SuggestInput):
 
