@@ -40,18 +40,33 @@ def recruiter_dashboard(request):
         "user": request.user.username
     })
 
+import traceback
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 @parser_classes([MultiPartParser, FormParser])
 def register_user(request):
+
+    print("REQUEST DATA:", request.data)
+
     serializer = RegisterSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save()
-        return Response({"message": "User registered successfully"}, status=201)
+        try:
+            user = serializer.save()
+            print("USER CREATED:", user)
+            return Response({"message": "User registered successfully"}, status=201)
 
+        except Exception as e:
+            print("🔥 REGISTER SAVE CRASH 🔥")
+            traceback.print_exc()
+            return Response(
+                {"REAL_ERROR": str(e)},
+                status=500
+            )
+
+    print("❌ SERIALIZER INVALID:", serializer.errors)
     return Response(serializer.errors, status=400)
-
 from resumes.models import Resume
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import parser_classes

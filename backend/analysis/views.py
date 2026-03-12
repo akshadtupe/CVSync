@@ -58,7 +58,7 @@ def run_analysis(request):
     # Resume embedding
     if not resume.embedding:
         embed_response = requests.post(
-            "http://127.0.0.1:8001/embed",
+            "https://cvsync-ml-services.onrender.com/embed",
             json={"text": resume_text},
         )
         resume.embedding = embed_response.json()["embedding"]
@@ -67,7 +67,7 @@ def run_analysis(request):
     # Job embedding
     if not job.embedding:
         embed_response = requests.post(
-            "http://127.0.0.1:8001/embed",
+            "https://cvsync-ml-services.onrender.com/embed",
             json={"text": job.description},
         )
         job.embedding = embed_response.json()["embedding"]
@@ -75,7 +75,7 @@ def run_analysis(request):
 
     #SIMILARITY
     similarity_response = requests.post(
-        "http://127.0.0.1:8001/similarity",
+        "https://cvsync-ml-services.onrender.com/similarity",
         json={
             "resume_embedding": resume.embedding,
             "job_embedding": job.embedding,
@@ -92,7 +92,7 @@ def run_analysis(request):
     #Suggestions (LLM)
 
     suggest_response = requests.post(
-        "http://127.0.0.1:8001/suggest",
+        "https://cvsync-ml-services.onrender.com/suggest",
         json={
             "resume_text": resume_text,
             "job_description": job.description,

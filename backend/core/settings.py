@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-w(%+%k+^+=ldunk$q4+tp(2&gjc8^+b4$&&7q#bmp^0h2=r&-a"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://cvsync-ml-services.onrender.com/"]
 
 
 # Application definition
