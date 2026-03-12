@@ -30,6 +30,7 @@ SECRET_KEY = "django-insecure-w(%+%k+^+=ldunk$q4+tp(2&gjc8^+b4$&&7q#bmp^0h2=r&-a
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ["cvsync-ml-services.onrender.com"
+                 "cvsync-1.onrender.com",
                 "localhost",
                 "127.0.0.1"
                 ]
