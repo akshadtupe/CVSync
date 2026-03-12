@@ -29,7 +29,10 @@ SECRET_KEY = "django-insecure-w(%+%k+^+=ldunk$q4+tp(2&gjc8^+b4$&&7q#bmp^0h2=r&-a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["https://cvsync-ml-services.onrender.com/"]
+ALLOWED_HOSTS = ["cvsync-ml-services.onrender.com"
+                "localhost",
+                "127.0.0.1"
+                ]
 
 
 # Application definition
