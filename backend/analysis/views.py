@@ -19,6 +19,9 @@ from PyPDF2 import PdfReader
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsStudent])
 def run_analysis(request):
+    print("USER:", request.user)
+    print("DATA:", request.data)
+    print("RESUME:", getattr(request.user, "resume", None))
 
     
     job_id = request.data.get("job_id")
