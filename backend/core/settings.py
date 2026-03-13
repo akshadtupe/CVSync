@@ -26,6 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-w(%+%k+^+=ldunk$q4+tp(2&gjc8^+b4$&&7q#bmp^0h2=r&-a"
 
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_SECRET"),
+}
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
@@ -53,8 +58,14 @@ INSTALLED_APPS = [
     'jobs',
     'analysis',
     'rest_framework',
+
+    #cloud storage
+    "cloudinary",
+    "cloudinary_storage",
     
 ]
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -157,6 +168,8 @@ import os
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
 
 
 
