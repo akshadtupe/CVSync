@@ -52,7 +52,7 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-dvh flex items-center justify-center bg-gray-100 px-4">
 
   <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
 
@@ -77,9 +77,9 @@ function Register() {
     />
 
     <select
-      value={role}
-      onChange={(e) => setRole(e.target.value)}
-      className="w-full border rounded-lg px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
+    value={role}
+    onChange={(e) => setRole(e.target.value)}
+    className="w-full border rounded-lg px-4 py-2 mb-4 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none"
     >
       <option value="student">Student</option>
       <option value="recruiter">Recruiter</option>
