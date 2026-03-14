@@ -63,7 +63,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = FastAPI()
 
-# ✅ DEPLOY SAFE CHANGE (lazy model loading)
+#DEPLOY SAFE CHANGE (lazy model loading)
 model = None
 
 
