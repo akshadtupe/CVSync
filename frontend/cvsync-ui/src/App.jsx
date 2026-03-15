@@ -9,6 +9,7 @@ import MyApplications from "./pages/MyApplication";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
+import Landing from "./pages/LandingPage";
 
 
 
@@ -18,8 +19,13 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route
+
+
+<Route path="/" element={<Landing />} />
+
+<Route path="/login" element={<Login />} />
+
+<Route
   path="/student"
   element={
     <ProtectedRoute role="student">
@@ -53,6 +59,8 @@ function App() {
 <Route path="/profile" element={<Profile/>} />
 
 <Route path="/about" element={<About/>} />
+
+
 
 
 </Routes>
