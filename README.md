@@ -8,6 +8,9 @@ CVSync is an AI‑powered Resume Analysis and Job Matching platform that helps u
 
 https://cv-sync.vercel.app/
 
+## 🌐Video Demo
+https://www.linkedin.com/posts/akshad-tupe-185785290_machinelearning-django-react-ugcPost-7440265698154795009-23IG?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEaX_rUB3hq255BBL4DdyQLrbuVfSb3vsMU
+
 ---
 
 ## ✨ Features
